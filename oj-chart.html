@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--
+ Copyright (c) 2014, 2017, Oracle and/or its affiliates.
+ The Universal Permissive License (UPL), Version 1.0
+ -->
+
+<!-- ************************ IMPORTANT INFORMATION ************************************
+  This web basic template is provided as an example of how to configure
+  a JET web application.  It contains the Oracle JET framework and a default
+  requireJS configuration file to show how JET can be setup in a common application.
+  This project template can be used in conjunction with demo code from the JET
+  website to test JET component behavior and interactions.
+
+  Any CSS styling with the prefix "demo-" is for demonstration only and is not
+  provided as part of the JET framework.
+
+  Please see the demos under Cookbook/Patterns/App Shell: Web and the CSS documentation
+  under Support/API Docs/Non-Component Styling on the JET website for more information on how to use 
+  the best practice patterns shown in this template.
+
+  Aria Landmark role attributes are added to the different sections of the application
+  for accessibility compliance. If you change the type of content for a specific
+  section from what is defined, you should also change the role value for that
+  section to represent the appropriate content type.
+  ***************************** IMPORTANT INFORMATION ************************************ -->
+<html lang="en-us">
+  <head>
+    <title>SQLcl JET Chart</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript">
+      var chartSeries = "[]";
+      var chartGroups = "[]";
+      var chartTitle = "SQLcl JET Chart";
+      var chartType = "combo";
+      var chartApp;
+    </script>
+
+    <style>
+      /*@import url('https:////static.oracle.com/cdn/jet/v3.2.0/default/css/alta/oj-alta-min.css');*/
+      @import url('https://static.oracle.com/cdn/jet/v4.0.0/default/css/alta/oj-alta-min.css');
+
+      body {
+          overflow-x: hidden !important;
+          overflow-y: hidden !important;
+      }
+    </style>
+
+  </head>
+  <body class="oj-web-applayout-body">
+    <div id="globalBody" class="oj-web-applayout-page">
+      <!--
+         ** Oracle JET V3.2.0 web application header pattern.
+         ** Please see the demos under Cookbook/Patterns/App Shell: Web
+         ** and the CSS documentation under Support/API Docs/Non-Component Styling
+         ** on the JET website for more information on how to use this pattern.
+      -->
+      <header role="banner" class="oj-web-applayout-header">
+        <div class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center">
+          <div data-bind="css: smScreen() ? 'oj-flex-bar-center-absolute' : 'oj-flex-bar-middle oj-sm-align-items-baseline'">
+            <h1 class="oj-web-applayout-header-title" title="Application Name" data-bind="text: appName"></h1>
+          </div>
+          <div class="oj-flex-bar-end">
+            <span role="img" class="oj-sm-only-hide oj-icon demo-oracle-icon" title="Oracle Logo" alt="Oracle Logo"></span>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="oj-web-applayout-max-width oj-web-applayout-content">
+        
+        <div id='sqlcl-chart' style="width:100%;">
+          <!--div id="barChart" data-bind="ojComponent: {
+                  component: 'ojChart', 
+                  type: chart.typeValue, 
+                  orientation: chart.orientationValue,
+                  stack: chart.stackValue,
+                  series: chart.barSeriesValue, 
+                  groups: chart.barGroupsValue, 
+                  animationOnDisplay: 'auto',
+                  animationOnDataChange: 'auto',
+                  hoverBehavior: 'dim'
+              }"
+               style="width:100%;">
+          </div-->
+          <oj-chart id="barChart"
+            type="[[chart.typeValue]]" 
+            orientation="[[chart.orientationValue]]"
+            stack="[[chart.stackValue]]"
+            series="[[chart.barSeriesValue]]"
+            groups="[[chart.barGroupsValue]]" 
+            animation-on-display="auto"
+            animation-on-data-change="auto"
+            hover-behavior="dim"
+            style="width:100%;">
+          </oj-chart>
+          <div id="myToolbar" aria-label="Chart Display Options Toolbar" aria-controls="barChart"
+             data-bind="ojComponent: {component:'ojToolbar'}"
+             style="max-width:500px;width:100%;">
+              <!-- vertical/horizontal toggle button -->
+              <div id="radioButtonset" data-bind="ojComponent: {component: 'ojButtonset', focusManagement:'none', checked: chart.orientationValue, chroming: 'half'}" 
+                   aria-label="Choose an orientation.">
+                  <!-- ko foreach: chart.orientationOptions -->
+                    <label data-bind="attr: {for: id}"></label>
+                    <input type="radio" name="orientation"
+                         data-bind="value: value, attr: {id: id},
+                         ojComponent: {component: 'ojButton', label: label, 
+                                           icons: {start: icon}, display: 'icons'}"/>
+                  <!-- /ko -->
+              </div>
+              <span role="separator" aria-orientation="vertical" class="oj-toolbar-separator"></span>
+              <!-- unstacked/stacked toggle button -->
+              <div id="radioButtonset2" data-bind="ojComponent: {component: 'ojButtonset', focusManagement:'none', checked: chart.stackValue, chroming: 'half'}" 
+                   aria-label="Choose a stack setting.">
+                  <!-- ko foreach: chart.stackOptions -->
+                    <label data-bind="attr: {for: id}"></label>
+                    <input type="radio" name="stack"
+                         data-bind="value: value, attr: {id: id},
+                         ojComponent: {component: 'ojButton', label: label, 
+                                           icons: {start: icon}, display: 'icons'}"/>
+                  <!-- /ko -->
+              </div>
+          </div>
+      </div>
+      <footer class="oj-web-applayout-footer" role="contentinfo">
+        <div class="oj-web-applayout-footer-item oj-web-applayout-max-width">
+          <ul>
+            <!-- ko foreach: footerLinks -->
+            <li><a data-bind="text : name, attr : {id: linkId, href : linkTarget}"></a></li>
+            <!-- /ko -->
+          </ul>
+        </div>
+        <div class="oj-web-applayout-footer-item oj-web-applayout-max-width oj-text-secondary-color oj-text-sm">
+          Sample code by Oracle and Justin Biard
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js"></script>
+
+    <script type="text/javascript">
+
+function _getCDNPath(paths) {
+  var cdnPath = "https://static.oracle.com/cdn/jet/";
+  var ojPath = "v4.0.0/default/js/";
+  var thirdpartyPath = "v4.0.0/3rdparty/";
+  var keys = Object.keys(paths);
+  var newPaths = {};
+  function _isoj(key) {
+      return (key.indexOf('oj') === 0 && key !== 'ojdnd');
+  }
+  keys.forEach(function(key) {
+      newPaths[key] = cdnPath + (_isoj(key) ? ojPath : thirdpartyPath) + paths[key];
+  });
+  return newPaths;
+}
+
+requirejs.config({
+  paths: _getCDNPath({
+      'knockout': 'knockout/knockout-3.4.0',
+      'jquery': 'jquery/jquery-3.1.1.min',
+      'jqueryui-amd': 'jquery/jqueryui-amd-1.12.0.min',
+      'promise': 'es6-promise/es6-promise.min',
+      'ojs': 'min',
+      'ojL10n': 'ojL10n',
+      'ojtranslations': 'resources',
+      'signals': 'js-signals/signals.min',
+      'text': 'require/text',
+      'hammerjs': 'hammer/hammer-2.0.8.min',
+      'ojdnd': 'dnd-polyfill/dnd-polyfill-1.0.0.min',
+      'customElements': 'webcomponents/CustomElements'
+  }),
+// Shim configurations for modules that do not expose AMD
+shim: {
+  'jquery': {
+    exports: ['jQuery', '$']
+  }
+}
+});
+
+/**
+ * A top-level require call executed by the Application.
+ * Although 'ojcore' and 'knockout' would be loaded in any case (they are specified as dependencies
+ * by the modules themselves), we are listing them explicitly to get the references to the 'oj' and 'ko'
+ * objects in the callback
+ */
+require(['ojs/ojcore', 'knockout', 'ojs/ojknockout', 'ojs/ojbutton', 'ojs/ojtoolbar', 'ojs/ojmenu', 'ojs/ojchart'],
+  function (oj, ko) { // this callback gets executed when all required modules are loaded
+
+    function ChartModel() {
+        var self = this;
+
+        self.update = function() {
+            self.barSeriesValue(JSON.parse(window.chartSeries));
+            self.barGroupsValue(JSON.parse(window.chartGroups));
+            self.typeValue(window.chartType);
+        };
+
+        self.typeValue = ko.observable(window.chartType);
+        self.barSeriesValue = ko.observableArray();
+        self.barGroupsValue = ko.observableArray();
+
+        /* toggle button variables */
+        self.stackValue = ko.observable('off');
+        self.orientationValue = ko.observable('vertical');
+
+        /* toggle buttons*/
+        self.stackOptions = [
+            {id: 'unstacked', label: 'unstacked', value: 'off', icon: 'oj-icon demo-bar-unstack'},
+            {id: 'stacked', label: 'stacked', value: 'on', icon: 'oj-icon demo-bar-stack'}
+        ];
+        self.orientationOptions = [
+            {id: 'vertical', label: 'vertical', value: 'vertical', icon: 'oj-icon demo-bar-vert'},
+            {id: 'horizontal', label: 'horizontal', value: 'horizontal', icon: 'oj-icon demo-bar-horiz'}
+        ];
+    }
+
+    function ControllerViewModel() {
+      var self = this;
+     
+      self.chart = new ChartModel();
+
+      self.update = function() {
+        self.appName(window.chartTitle);
+        self.chart.update();
+      }
+
+      // Media queries for repsonsive layouts
+      var smQuery = oj.ResponsiveUtils.getFrameworkQuery(oj.ResponsiveUtils.FRAMEWORK_QUERY_KEY.SM_ONLY);
+      self.smScreen = oj.ResponsiveKnockoutUtils.createMediaQueryObservable(smQuery);
+
+      // Header
+      // Application Name used in Branding Area
+      self.appName = ko.observable('<<WAITING FOR DATA>>');
+
+      // Footer
+      function footerLink(name, id, linkTarget) {
+        this.name = name;
+        this.linkId = id;
+        this.linkTarget = linkTarget;
+      }
+      self.footerLinks = ko.observableArray([
+        new footerLink('About SQLcl', 'aboutSQLcl', 'http://www.oracle.com/technetwork/developer-tools/sqlcl/overview/index.html'),
+        new footerLink('About Nashorn', 'aboutNashorn', 'https://docs.oracle.com/javase/9/nashorn/nashorn-java-api.htm#JSNUG112'),
+        new footerLink('About Oracle JET', 'aboutJET', 'http://oraclejet.org'),
+        new footerLink('icodealot.com', 'icodealot', 'https://icodealot.com')
+      ]);
+    }
+
+    $(function() {
+
+      function init() {
+        // Bind your ViewModel for the content of the whole page body.
+        chartApp = new ControllerViewModel();
+        ko.applyBindings(chartApp, document.getElementById('globalBody'));
+        chartApp.update();
+      }
+
+      // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready 
+      // event before executing any code that might interact with Cordova APIs or plugins.
+      if ($(document.body).hasClass('oj-hybrid')) {
+        document.addEventListener("deviceready", init);
+      } else {
+        init();
+      }
+
+    });
+  }
+);
+    </script>
+
+  </body>
+
+</html>
