@@ -39,8 +39,10 @@
     </script>
 
     <style>
-      /*@import url('https:////static.oracle.com/cdn/jet/v3.2.0/default/css/alta/oj-alta-min.css');*/
-      @import url('https://static.oracle.com/cdn/jet/v4.0.0/default/css/alta/oj-alta-min.css');
+      
+      /* @import url('https://static.oracle.com/cdn/jet/v4.0.0/default/css/alta/oj-alta-min.css'); */
+
+      @import url('https:////static.oracle.com/cdn/jet/v3.2.0/default/css/alta/oj-alta-min.css');
 
       body {
           overflow-x: hidden !important;
@@ -70,7 +72,7 @@
       <div role="main" class="oj-web-applayout-max-width oj-web-applayout-content">
         
         <div id='sqlcl-chart' style="width:100%;">
-          <!--div id="barChart" data-bind="ojComponent: {
+          <div id="barChart" data-bind="ojComponent: {
                   component: 'ojChart', 
                   type: chart.typeValue, 
                   orientation: chart.orientationValue,
@@ -82,8 +84,8 @@
                   hoverBehavior: 'dim'
               }"
                style="width:100%;">
-          </div-->
-          <oj-chart id="barChart"
+            </div>
+          <!-- <oj-chart id="barChart"
             type="[[chart.typeValue]]" 
             orientation="[[chart.orientationValue]]"
             stack="[[chart.stackValue]]"
@@ -93,7 +95,7 @@
             animation-on-data-change="auto"
             hover-behavior="dim"
             style="width:100%;">
-          </oj-chart>
+          </oj-chart> -->
           <div id="myToolbar" aria-label="Chart Display Options Toolbar" aria-controls="barChart"
              data-bind="ojComponent: {component:'ojToolbar'}"
              style="max-width:500px;width:100%;">
@@ -142,8 +144,8 @@
 
 function _getCDNPath(paths) {
   var cdnPath = "https://static.oracle.com/cdn/jet/";
-  var ojPath = "v4.0.0/default/js/";
-  var thirdpartyPath = "v4.0.0/3rdparty/";
+  var ojPath = "v3.2.0/default/js/";
+  var thirdpartyPath = "v3.2.0/3rdparty/";
   var keys = Object.keys(paths);
   var newPaths = {};
   function _isoj(key) {
@@ -268,6 +270,7 @@ require(['ojs/ojcore', 'knockout', 'ojs/ojknockout', 'ojs/ojbutton', 'ojs/ojtool
   }
 );
     </script>
+    <!--script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script-->
 
   </body>
 
