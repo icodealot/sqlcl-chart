@@ -1,5 +1,5 @@
 # sqlcl-chart
-Add Oracle JET charts to SQLcl
+Add Oracle JET charts to SQLcl. This is an early access release. There are probably bugs. There is very little exception handling and the query format is not very flexible at the moment. But it is here for you to play with if you like. Cheers!
 
 ## Getting Started
 
