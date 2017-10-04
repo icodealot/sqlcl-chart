@@ -74,7 +74,8 @@ if (typeof ojChart === 'undefined' || typeof ojChart !== 'object') {
 		cmd: null,			// -> The command text entered on the terminal
 		
 		// Other application properties
-		url: Paths.get("oj-chart.html").toUri().toString()
+		url: "",
+		default_url: Paths.get("oj-chart.html").toUri().toString()
 
 	};
 } else {
@@ -83,7 +84,6 @@ if (typeof ojChart === 'undefined' || typeof ojChart !== 'object') {
 
 var WebApp = Java.extend(Application, {
 	init: function() {
-		ojChart.launched = true;
 		Platform.setImplicitExit(false); // prevent window close [x] from detaching thread
 	},
 	start: function(stage) {
@@ -144,18 +144,22 @@ ojChart.setupStage = function(stage) {
 		}
 	});
 
-	ojChart.web = new WebView();
+	ojChart.web = ojChart.web ? ojChart.web : new WebView();
 	ojChart.web.engine.setJavaScriptEnabled(true);
 	
-	if (ojChart.html) {
-	 	ojChart.web.engine.loadContent(ojChart.html);
-	} else {
+	if (ojChart.url) {
+		ojChart.stage.title = ojChart.url;
 		ojChart.web.engine.load(ojChart.url);
+	} else if (ojChart.html) {
+		ojChart.stage.title = "SQLcl JET Chart"; 
+		ojChart.web.engine.loadContent(ojChart.html);
+	} else {
+		ojChart.stage.title = "SQLcl JET Chart";
+		ojChart.web.engine.load(ojChart.default_url);
 	}
 		
 	var scene = new Scene(ojChart.web, ojChart.width, ojChart.height);
 	
-	ojChart.stage.title = "SQLcl JET Chart";
 	ojChart.stage.scene = scene;
 	ojChart.stage.show();
 }
@@ -173,17 +177,22 @@ ojChart.runLater = function(cb) {
 		try {
 			Platform.runLater(new java.lang.Runnable(cb));
 		} catch (e) {
-			if (e.contains("Toolkit not initialized")) {
+			if (e.toString().contains("Toolkit not initialized")) {
 				// consume it...
+				print("Waiting for toolkit to initialize.");
 			} else {
 				print(e);
 			}
 		}
+	} else {
+		ojChart.launchApp();
 	}
 }
 
 ojChart.launchApp = function(url){
+	ojChart.url = url;
 	if (! ojChart.launched) {
+		ojChart.launched = true;
 		new java.lang.Thread(function () {
 			Application.launch(WebApp.class, args);
 		}).start();
@@ -191,20 +200,9 @@ ojChart.launchApp = function(url){
 		ojChart.runLater({
 			run: function () {
 				ojChart.setupStage();
-				// if (url) {
-				// 	ojChart.web.engine.load(url);
-				// }
 			}
 		});
 	}
-
-	// if (url !== "" && ojChart.launched) {
-	// 	ojChart.runLater({
-	// 		run: function() {
-	// 			ojChart.web.engine.load(url);
-	// 		}
-	// 	});
-	// }
 }
 
 
@@ -335,6 +333,16 @@ cmd.handle = function (conn, ctx, cmd) {
 		ojChart.runLater({
 			run: function () {
 				ojChart.web.engine.executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/' + '#startOpened');}"); 
+			}
+		});
+		return true;
+	}
+
+	else if (cmd.getSql().trim().startsWith("chart help")) {
+		ojChart.launchApp("https://github.com/icodealot/sqlcl-chart/blob/master/README.md#sqlcl-chart");
+		ojChart.runLater({
+			run: function () {
+				ojChart.stage.title = "SQLcl JET Chart Help";
 			}
 		});
 		return true;
