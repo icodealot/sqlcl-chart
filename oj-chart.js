@@ -144,7 +144,7 @@ ojChart.setupStage = function(stage) {
 		}
 	});
 
-	ojChart.web = ojChart.web ? ojChart.web : new WebView();
+	ojChart.web = new WebView();
 	ojChart.web.engine.setJavaScriptEnabled(true);
 	
 	if (ojChart.url) {
@@ -200,6 +200,12 @@ ojChart.launchApp = function(url){
 		ojChart.runLater({
 			run: function () {
 				ojChart.setupStage();
+			}
+		});
+	} else if (ojChart.url) {
+		ojChart.runLater({
+			run: function () {
+				ojChart.web.engine.load(ojChart.url);
 			}
 		});
 	}
@@ -329,14 +335,14 @@ cmd.handle = function (conn, ctx, cmd) {
 		return true;
 	}
 
-	else if (cmd.getSql().trim().startsWith("chart debug")) {
-		ojChart.runLater({
-			run: function () {
-				ojChart.web.engine.executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/' + '#startOpened');}"); 
-			}
-		});
-		return true;
-	}
+	// else if (cmd.getSql().trim().startsWith("chart debug")) {
+	// 	ojChart.runLater({
+	// 		run: function () {
+	// 			ojChart.web.engine.executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/' + '#startOpened');}"); 
+	// 		}
+	// 	});
+	// 	return true;
+	// }
 
 	else if (cmd.getSql().trim().startsWith("chart help")) {
 		ojChart.launchApp("https://github.com/icodealot/sqlcl-chart/blob/master/README.md#sqlcl-chart");
