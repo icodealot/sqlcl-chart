@@ -178,10 +178,18 @@ ojChart.setupStage = function(stage) {
 /* ----------------------------------------------------------------
 	Function: runLater({run:function})
 
-	If stage is supplied then it is assumed to have come from
-	Application.launch(). setupStage() can be called to reset
-	the oj-chart window or to show it after it has been hidden 
-	(i.e.: by closing the window.)
+	Encapsulates the JavaFX Platform.runLater() with some basic
+	exception handling. The function expects to receive an object
+	with a property / function called run.
+
+	For example:
+
+		ojChart.runLater({
+			run: function () {
+				// do something on JavaFX thread...
+			}
+		});
+
    ---------------------------------------------------------------- */
 ojChart.runLater = function(cb) {
 	if (ojChart.launched) {

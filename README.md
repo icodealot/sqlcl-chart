@@ -24,6 +24,7 @@ sql> script https://raw.githubusercontent.com/icodealot/sqlcl-chart/master/oj-ch
 ```bash
 sql> chart
 ```
+![SQLcl JET Chart Demo](/oj-chart_demo.gif?raw=true)
 
 ## Chart Commands
 
