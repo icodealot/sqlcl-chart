@@ -1,3 +1,5 @@
+ARCHIVED: just a note that this repository is now archived. This was a fun example of integrating sqlcl with OracleJET and I could see use cases for something similar in the future but not really anything I will update or build on in this repository. Thanks for following along and your interest in the idea.
+
 # sqlcl-chart
 Add Oracle JET charts to SQLcl. This is an early access release. There are probably bugs. There is very little exception handling and the query format is not very flexible at the moment. But it is here for you to play with if you like. Cheers!
 
